@@ -1,1 +1,175 @@
-g
+/* Global styles */
+body {
+  margin: 0;
+  font-family: 'Arial', sans-serif;
+  background: #0a0a0a;
+  color: #fff;
+  overflow-x: hidden;
+}
+
+header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  background: linear-gradient(90deg, #ff00cc, #3333ff);
+  text-align: center;
+  animation: headerGlow 2s infinite alternate;
+}
+
+header h1 {
+  margin: 0;
+  font-size: 2em;
+  text-shadow: 0 0 10px #ff00cc, 0 0 20px #3333ff;
+}
+
+.buttons {
+  margin-top: 10px;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+button {
+  background: #ff00cc;
+  border: none;
+  padding: 10px 15px;
+  color: #fff;
+  font-weight: bold;
+  cursor: pointer;
+  border-radius: 10px;
+  transition: 0.3s;
+  box-shadow: 0 0 10px #ff00cc;
+}
+
+button:hover {
+  background: #3333ff;
+  box-shadow: 0 0 20px #3333ff;
+  transform: scale(1.1);
+}
+
+.search-section {
+  display: flex;
+  justify-content: center;
+  margin: 20px 0;
+}
+
+#searchBox {
+  padding: 10px 15px;
+  width: 80%;
+  max-width: 500px;
+  border-radius: 15px;
+  border: none;
+  font-size: 1em;
+  outline: none;
+  box-shadow: 0 0 10px #ff00cc;
+  background: #111;
+  color: #fff;
+}
+
+#adImage {
+  display: block;
+  margin: 20px auto;
+  max-width: 90%;
+  height: auto;
+  border-radius: 15px;
+  box-shadow: 0 0 20px #ff00cc;
+  animation: adGlow 3s infinite alternate;
+}
+
+.movies-section {
+  padding: 20px;
+  overflow-x: hidden;
+}
+
+.movies-container {
+  display: flex;
+  gap: 20px;
+  overflow-x: auto;
+  padding-bottom: 20px;
+  scroll-behavior: smooth;
+}
+
+.movies-container::-webkit-scrollbar {
+  height: 10px;
+}
+
+.movies-container::-webkit-scrollbar-thumb {
+  background: #ff00cc;
+  border-radius: 10px;
+}
+
+.movie-card {
+  min-width: 250px;
+  background: #111;
+  border-radius: 15px;
+  box-shadow: 0 0 20px #ff00cc;
+  flex-shrink: 0;
+  overflow: hidden;
+  transition: transform 0.3s;
+}
+
+.movie-card:hover {
+  transform: scale(1.05);
+}
+
+.movie-card img {
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+}
+
+.movie-card .movie-info {
+  padding: 10px;
+  text-align: center;
+}
+
+.download-btn {
+  display: block;
+  margin: 10px auto;
+  background: #00ffcc;
+  border: none;
+  padding: 8px 12px;
+  color: #111;
+  font-weight: bold;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: 0.3s;
+  box-shadow: 0 0 10px #00ffcc;
+  animation: downloadPulse 2s infinite;
+}
+
+.download-btn:hover {
+  background: #ffcc00;
+  box-shadow: 0 0 20px #ffcc00;
+  transform: scale(1.1);
+}
+
+/* Animations */
+@keyframes headerGlow {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 100% 50%; }
+}
+
+@keyframes adGlow {
+  0% { box-shadow: 0 0 10px #ff00cc; }
+  50% { box-shadow: 0 0 20px #3333ff; }
+  100% { box-shadow: 0 0 10px #ff00cc; }
+}
+
+@keyframes downloadPulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .movie-card {
+    min-width: 200px;
+  }
+
+  #searchBox {
+    width: 90%;
+  }
+}
