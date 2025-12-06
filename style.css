@@ -67,13 +67,18 @@ button:hover {
   color: #fff;
 }
 
+.ad-section {
+  text-align: center;
+  padding: 10px 0;
+}
+
 #adImage {
   display: block;
-  margin: 20px auto;
-  max-width: 90%;
+  margin: 10px auto;
+  max-width: 200px;
   height: auto;
-  border-radius: 15px;
-  box-shadow: 0 0 20px #ff00cc;
+  border-radius: 10px;
+  box-shadow: 0 0 10px #ff00cc;
   animation: adGlow 3s infinite alternate;
 }
 
