@@ -20,41 +20,63 @@ uploadMovieBtn.addEventListener("click", () => {
   else alert("Incorrect password!");
 });
 
-movieFileInput.addEventListener("change", async (e) => {
+movieFileInput.addEventListener("change", (e) => {
   const file = e.target.files[0];
   if (!file) return;
 
   const title = prompt("Enter movie title:");
   if (!title) return;
 
-  try {
-    const formData = new FormData();
-    formData.append('file', file);
+  const thumbUrl = prompt("Enter thumbnail URL for this movie:") || '';
 
-    const response = await fetch('https://upload.uploadcare.com/base/', {
-      method: 'POST',
-      body: formData,
-      headers: {
-        'Authorization': 'Uploadcare.Simple f77e2afd69e72fdae840:' 
+  // Show progress bar
+  const progressContainer = document.getElementById("uploadProgressContainer");
+  const progressBar = document.getElementById("uploadProgressBar");
+  progressContainer.style.display = "block";
+  progressBar.style.width = "0%";
+
+  const xhr = new XMLHttpRequest();
+  xhr.open("POST", "https://upload.uploadcare.com/base/");
+
+  // Track upload progress
+  xhr.upload.addEventListener("progress", (event) => {
+    if (event.lengthComputable) {
+      const percent = Math.round((event.loaded / event.total) * 100);
+      progressBar.style.width = percent + "%";
+    }
+  });
+
+  // On upload complete
+  xhr.onload = async () => {
+    if (xhr.status === 200) {
+      const result = JSON.parse(xhr.responseText);
+      const fileUrl = `https://ucarecdn.com/${result.file}/`;
+
+      try {
+        await db.collection("movies").add({
+          title: title,
+          file: fileUrl,
+          thumbnail: thumbUrl,
+          createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        alert("Movie uploaded successfully!");
+        loadMovies();
+      } catch (err) {
+        alert("Firestore error: " + err.message);
       }
-    });
-    const result = await response.json();
-    const fileUrl = `https://ucarecdn.com/${result.file}/`;
-    const thumbUrl = prompt("Enter thumbnail URL for this movie:");
 
-    db.collection("movies").add({
-      title: title,
-      file: fileUrl,
-      thumbnail: thumbUrl || '',
-      createdAt: firebase.firestore.FieldValue.serverTimestamp()
-    }).then(() => {
-      alert("Movie uploaded successfully!");
-      loadMovies();
-    }).catch(err => alert(err));
+    } else {
+      alert("Upload failed: " + xhr.statusText);
+    }
+    progressContainer.style.display = "none";
+  };
 
-  } catch (err) {
-    alert("Upload failed: " + err.message);
-  }
+  const formData = new FormData();
+  formData.append("file", file);
+  formData.append("UPLOADCARE_PUB_KEY", "f77e2afd69e72fdae840");
+  formData.append("UPLOADCARE_STORE", "1");
+
+  xhr.send(formData);
 });
 
 // ===== AD IMAGES =====
