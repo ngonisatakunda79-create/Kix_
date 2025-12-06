@@ -1,1 +1,37 @@
-made by dhogo
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kix Movies</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+</head>
+<body>
+  <header>
+    <h1>Kix Movies</h1>
+    <div class="buttons">
+      <button id="uploadMovieBtn">⏫ Upload Movie</button>
+      <button id="uploadAdBtn">🌐 Upload Ad</button>
+      <button onclick="window.location.href='dstv.html'">Dstv Kix</button>
+    </div>
+  </header>
+
+  <section class="search-section">
+    <input type="text" id="searchBox" placeholder="Search movies...">
+  </section>
+
+  <section class="ad-section">
+    <img id="adImage" src="" alt="Ad" />
+  </section>
+
+  <section class="movies-section">
+    <div class="movies-container" id="moviesContainer">
+      <!-- Movie cards will be appended here -->
+    </div>
+  </section>
+
+  <script src="app.js"></script>
+</body>
+</html>
