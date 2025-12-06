@@ -1,4 +1,3 @@
-/* Global styles */
 body {
   margin: 0;
   font-family: 'Arial', sans-serif;
@@ -150,7 +149,6 @@ button:hover {
   transform: scale(1.1);
 }
 
-/* Animations */
 @keyframes headerGlow {
   0% { background-position: 0% 50%; }
   100% { background-position: 100% 50%; }
@@ -168,12 +166,10 @@ button:hover {
   100% { transform: scale(1); }
 }
 
-/* Responsive */
 @media (max-width: 768px) {
   .movie-card {
     min-width: 200px;
   }
-
   #searchBox {
     width: 90%;
   }
