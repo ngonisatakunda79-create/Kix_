@@ -1,34 +1,99 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MiniChat</title>
-  <link rel="stylesheet" href="style.css">
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+  <title>Netflix Lite</title>
+  <style>
+    body { background:#000; color:white; font-family:Arial; }
+    .movie { margin:20px; padding:10px; border:1px solid #444; }
+    iframe { width:100%; height:300px; border:none; }
+    button { padding:10px 20px; background:red; border:none; color:white; }
+  </style>
 </head>
 <body>
-  <div class="login-section">
-    <input id="usernameInput" placeholder="Enter your username">
-    <button id="loginBtn">Login / Register</button>
-  </div>
 
-  <div class="search-section">
-    <input id="searchInput" placeholder="Search users by name">
-  </div>
+<h1>Netflix Lite</h1>
+<p>Pay $1 to unlock movies.</p>
 
-  <div class="contacts-section" id="contactsContainer">
-    <!-- User contacts will appear here -->
-  </div>
+<button id="payBtn">Unlock Premium ($1)</button>
+<p id="status"></p>
 
-  <div class="chat-section" id="chatSection" style="display:none;">
-    <h3 id="chatWith"></h3>
-    <div id="messagesContainer"></div>
-    <input id="messageInput" placeholder="Type a message">
-    <button id="sendBtn">Send</button>
-  </div>
+<div id="movies"></div>
 
-  <script src="app.js"></script>
+<script>
+// -------------------------
+// PAYNOW PAYMENT SYSTEM
+// -------------------------
+const paynowID = 22728;
+const paynowKey = "a0fe927d-f148-4c96-a300-1ba8714161b8";
+
+// LocalStorage to remember if user paid
+let isPaid = localStorage.getItem("paid") === "true";
+
+document.getElementById("status").innerText = isPaid ? 
+  "✔ Premium unlocked" : 
+  "❌ Locked — Pay $1 to watch";
+
+document.getElementById("payBtn").onclick = async () => {
+    const response = await fetch("https://api.paynow.co.zw/v2/payments/initiate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          id: paynowID,
+          key: paynowKey,
+          amount: "1.00",
+          url: "http://example.com",   // callback (optional)
+          reference: "Netflix Lite Unlock",
+          resulturl: "http://example.com",
+          returnurl: "http://example.com"
+        })
+    });
+
+    const data = await response.json();
+    if (data.status === "error") {
+        alert("Paynow error: " + data.error);
+        return;
+    }
+
+    // Redirect user to Paynow page
+    window.location.href = data.redirecturl;
+
+    // Mark as paid (you can replace with proper polling)
+    localStorage.setItem("paid", "true");
+};
+
+// ------------------------------
+// FETCH FREE MOVIES (ARCHIVE.ORG)
+// ------------------------------
+async function loadMovies() {
+  const res = await fetch(
+    "https://archive.org/advancedsearch.php?q=mediatype:(movies)&output=json&rows=10"
+  );
+  const data = await res.json();
+  const docs = data.response.docs;
+
+  let html = "";
+
+  docs.forEach(movie => {
+    const movieID = movie.identifier;
+    const title = movie.title;
+    const embed = `https://archive.org/embed/${movieID}`;
+
+    html += `
+        <div class="movie">
+            <h2>${title}</h2>
+            ${isPaid
+                ? `<iframe src="${embed}" allowfullscreen></iframe>`
+                : `<p>🔒 Locked — Pay $1 to watch</p>`
+            }
+        </div>
+    `;
+  });
+
+  document.getElementById("movies").innerHTML = html;
+}
+
+loadMovies();
+</script>
+
 </body>
 </html>
