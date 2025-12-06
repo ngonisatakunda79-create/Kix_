@@ -1,1 +1,88 @@
-jie
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DStv Kix Channel</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>DStv Kix Channel</h1>
+    <button onclick="goBack()">⬅ Back to Home</button>
+  </header>
+
+  <section class="live-section">
+    <p style="text-align:center; color:#fff; margin-top:20px;">Live Kix Channel</p>
+    
+    <!-- Video Embed -->
+    <div class="video-container">
+      <!-- Replace src with actual live stream if available -->
+      <iframe 
+        src="https://www.youtube.com/embed/live_stream?channel=UCBm_wv4Kr7v8r4qObztM4mw" 
+        frameborder="0" 
+        allowfullscreen
+        width="100%" 
+        height="500px">
+      </iframe>
+    </div>
+  </section>
+
+  <script>
+    function goBack() {
+      window.location.href = 'index.html';
+    }
+  </script>
+
+  <style>
+    body {
+      background: #0a0a0a;
+      color: #fff;
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      text-align: center;
+    }
+
+    header {
+      background: linear-gradient(90deg, #ff00cc, #3333ff);
+      padding: 15px;
+      text-align: center;
+      box-shadow: 0 0 20px #ff00cc;
+    }
+
+    header h1 {
+      margin: 0;
+      text-shadow: 0 0 10px #fff;
+    }
+
+    header button {
+      margin-top: 10px;
+      padding: 10px 15px;
+      border: none;
+      background: #00ffcc;
+      color: #111;
+      font-weight: bold;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: 0.3s;
+      box-shadow: 0 0 10px #00ffcc;
+    }
+
+    header button:hover {
+      transform: scale(1.1);
+      background: #ffcc00;
+      box-shadow: 0 0 20px #ffcc00;
+    }
+
+    .video-container {
+      margin: 20px auto;
+      max-width: 800px;
+      border: 2px solid #ff00cc;
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: 0 0 20px #ff00cc;
+    }
+  </style>
+</body>
+</html>
