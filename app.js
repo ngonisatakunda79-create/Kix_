@@ -1,4 +1,3 @@
-// ===== FIREBASE CONFIG =====
 const firebaseConfig = {
   apiKey: "AIzaSyAkPqrjrXqtdDxxBhLgRXjRfPciw7XtAj4",
   authDomain: "novely-4421d.firebaseapp.com",
@@ -8,39 +7,57 @@ const firebaseConfig = {
   appId: "1:597056434307:web:xxxxxx"
 };
 
-// Initialize Firebase
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
-
-// ===== PASSWORD =====
 const PASSWORD = "dhogo";
 
-// ===== UPLOAD MOVIE =====
 const uploadMovieBtn = document.getElementById("uploadMovieBtn");
+const movieFileInput = document.getElementById("movieFileInput");
+
 uploadMovieBtn.addEventListener("click", () => {
   const pw = prompt("Enter password to upload movies:");
-  if (pw === PASSWORD) {
-    const title = prompt("Enter movie title:");
-    const file = prompt("Enter movie Uploadcare URL:");
-    const thumb = prompt("Enter thumbnail URL:");
+  if (pw === PASSWORD) movieFileInput.click();
+  else alert("Incorrect password!");
+});
 
-    if (title && file && thumb) {
-      db.collection("movies").add({
-        title: title,
-        file: file,
-        thumbnail: thumb,
-        createdAt: firebase.firestore.FieldValue.serverTimestamp()
-      }).then(() => {
-        alert("Movie uploaded successfully!");
-        loadMovies();
-      }).catch(err => alert(err));
-    }
-  } else {
-    alert("Incorrect password!");
+movieFileInput.addEventListener("change", async (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+
+  const title = prompt("Enter movie title:");
+  if (!title) return;
+
+  try {
+    const formData = new FormData();
+    formData.append('file', file);
+
+    const response = await fetch('https://upload.uploadcare.com/base/', {
+      method: 'POST',
+      body: formData,
+      headers: {
+        'Authorization': 'Uploadcare.Simple f77e2afd69e72fdae840:' 
+      }
+    });
+    const result = await response.json();
+    const fileUrl = `https://ucarecdn.com/${result.file}/`;
+    const thumbUrl = prompt("Enter thumbnail URL for this movie:");
+
+    db.collection("movies").add({
+      title: title,
+      file: fileUrl,
+      thumbnail: thumbUrl || '',
+      createdAt: firebase.firestore.FieldValue.serverTimestamp()
+    }).then(() => {
+      alert("Movie uploaded successfully!");
+      loadMovies();
+    }).catch(err => alert(err));
+
+  } catch (err) {
+    alert("Upload failed: " + err.message);
   }
 });
 
-// ===== UPLOAD AD IMAGE =====
+// ===== AD IMAGES =====
 const uploadAdBtn = document.getElementById("uploadAdBtn");
 uploadAdBtn.addEventListener("click", () => {
   const pw = prompt("Enter password to upload ad image:");
@@ -55,21 +72,14 @@ uploadAdBtn.addEventListener("click", () => {
         loadAds();
       }).catch(err => alert(err));
     }
-  } else {
-    alert("Incorrect password!");
-  }
+  } else alert("Incorrect password!");
 });
 
-// ===== DISPLAY ADS =====
-let adImages = [];
-let adIndex = 0;
-
+let adImages = [], adIndex = 0;
 function loadAds() {
   db.collection("ads").orderBy("createdAt", "desc").get().then(snapshot => {
     adImages = snapshot.docs.map(doc => doc.data().url);
-    if (adImages.length > 0) {
-      showAd();
-    }
+    if (adImages.length > 0) showAd();
   });
 }
 
@@ -91,7 +101,6 @@ function loadMovies(searchTerm = "") {
       if (data.title.toLowerCase().includes(searchTerm.toLowerCase())) {
         const card = document.createElement("div");
         card.className = "movie-card";
-
         card.innerHTML = `
           <img src="${data.thumbnail}" alt="${data.title}">
           <div class="movie-info">
@@ -105,7 +114,6 @@ function loadMovies(searchTerm = "") {
   });
 }
 
-// ===== DOWNLOAD FUNCTION =====
 function downloadMovie(url) {
   const a = document.createElement("a");
   a.href = url;
@@ -113,13 +121,10 @@ function downloadMovie(url) {
   a.click();
 }
 
-// ===== SEARCH FUNCTIONALITY =====
-const searchBox = document.getElementById("searchBox");
-searchBox.addEventListener("input", () => {
-  loadMovies(searchBox.value);
+document.getElementById("searchBox").addEventListener("input", e => {
+  loadMovies(e.target.value);
 });
 
-// ===== INITIAL LOAD =====
 window.onload = function() {
   loadAds();
   loadMovies();
