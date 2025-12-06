@@ -21,7 +21,7 @@ uploadMovieBtn.addEventListener("click", () => {
   const pw = prompt("Enter password to upload movies:");
   if (pw === PASSWORD) {
     const title = prompt("Enter movie title:");
-    const file = prompt("Enter movie Uploadcare URL:"); // You can integrate Uploadcare widget here
+    const file = prompt("Enter movie Uploadcare URL:");
     const thumb = prompt("Enter thumbnail URL:");
 
     if (title && file && thumb) {
@@ -32,7 +32,7 @@ uploadMovieBtn.addEventListener("click", () => {
         createdAt: firebase.firestore.FieldValue.serverTimestamp()
       }).then(() => {
         alert("Movie uploaded successfully!");
-        loadMovies(); // refresh movie list
+        loadMovies();
       }).catch(err => alert(err));
     }
   } else {
@@ -77,7 +77,7 @@ function showAd() {
   const adImg = document.getElementById("adImage");
   adImg.src = adImages[adIndex];
   adIndex = (adIndex + 1) % adImages.length;
-  setTimeout(showAd, 5000); // rotate every 5 seconds
+  setTimeout(showAd, 5000);
 }
 
 // ===== DISPLAY MOVIES =====
