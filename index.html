@@ -3,40 +3,31 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Kix Movies</title>
+  <title>MiniChat</title>
   <link rel="stylesheet" href="style.css">
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 </head>
 <body>
-  <header>
-    <h1>Kix Movies</h1>
-    <div class="buttons">
-      <button id="uploadMovieBtn">⏫ Upload Movie</button>
-      <input type="file" id="movieFileInput" style="display:none" accept="video/*">
-      <button id="uploadAdBtn">🌐 Upload Ad</button>
-      <button onclick="window.location.href='dstv.html'">Dstv Kix</button>
-    </div>
-  </header>
-
-  <section class="search-section">
-    <input type="text" id="searchBox" placeholder="Search movies...">
-  </section>
-
-  <!-- Upload progress bar -->
-  <div id="uploadProgressContainer" style="display:none; width:80%; margin:10px auto; background:#111; border-radius:10px;">
-    <div id="uploadProgressBar" style="width:0%; height:20px; background:#00ffcc; border-radius:10px;"></div>
+  <div class="login-section">
+    <input id="usernameInput" placeholder="Enter your username">
+    <button id="loginBtn">Login / Register</button>
   </div>
 
-  <section class="ad-section">
-    <img id="adImage" src="" alt="Ad" />
-  </section>
+  <div class="search-section">
+    <input id="searchInput" placeholder="Search users by name">
+  </div>
 
-  <section class="movies-section">
-    <div class="movies-container" id="moviesContainer">
-      <!-- Movie cards will appear here -->
-    </div>
-  </section>
+  <div class="contacts-section" id="contactsContainer">
+    <!-- User contacts will appear here -->
+  </div>
+
+  <div class="chat-section" id="chatSection" style="display:none;">
+    <h3 id="chatWith"></h3>
+    <div id="messagesContainer"></div>
+    <input id="messageInput" placeholder="Type a message">
+    <button id="sendBtn">Send</button>
+  </div>
 
   <script src="app.js"></script>
 </body>
