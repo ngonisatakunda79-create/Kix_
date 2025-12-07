@@ -1,107 +1,30 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<title>Paynow $1 Payment (Frontend ONLY)</title>
+<button onclick="startPayment()">Pay $1</button>
 
-<style>
-    body {
-        background: #0d0d0d;
-        color: white;
-        font-family: Arial;
-        text-align: center;
-        padding: 40px;
-    }
-
-    button {
-        padding: 15px 30px;
-        background: #ff0066;
-        color: white;
-        border: none;
-        font-size: 20px;
-        border-radius: 10px;
-        cursor: pointer;
-    }
-
-    iframe {
-        width: 100%;
-        height: 80vh;
-        margin-top: 20px;
-        border: none;
-        background: white;
-    }
-
-    #log {
-        background: #111;
-        padding: 15px;
-        margin-top: 20px;
-        border-radius: 10px;
-        font-size: 14px;
-        text-align: left;
-        height: 150px;
-        overflow: auto;
-    }
-</style>
-
-</head>
-<body>
-
-<h1>Paynow $1 Payment</h1>
-
-<button onclick="startPayment()">Start $1 Payment</button>
-
-<div id="log"></div>
-
-<iframe id="paynowFrame" style="display:none"></iframe>
+<iframe id="paynowFrame" style="display:none; width:100%; height:80vh;"></iframe>
 
 <script>
-const INTEGRATION_ID = "22728";
-const INTEGRATION_KEY = "a0fe927d-f148-4c96-a300-1ba8714161b8";
-
-function log(msg) {
-    document.getElementById("log").innerHTML += msg + "<br>";
-}
-
 async function startPayment() {
-    log("Creating Paynow transaction…");
+    const response = await fetch("/.netlify/functions/paynow", { method: "POST" });
+    const data = await response.json();
 
-    const payload = {
-        id: INTEGRATION_ID,
-        key: INTEGRATION_KEY,
-        amount: "1.00",
-        description: "Unlock Access",
-        returnurl: "https://yourwebsite.com/success.html",
-        resulturl: "https://yourwebsite.com/result.html",
-        autocapture: "1"
-    };
-
-    log("Sending request to Paynow API… (WILL FAIL — browser is blocked)");
-
-    try {
-        const response = await fetch("https://www.paynow.co.zw/interface/initiatetransaction", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/x-www-form-urlencoded"
-            },
-            body: new URLSearchParams(payload)
-        });
-
-        const text = await response.text();
-        log("Paynow returned:");
-        log(text);
-
-        // TRY to extract Payment URL
-        const payUrl = text.split("&")[0].replace("redirecturl=", "");
-
-        document.getElementById("paynowFrame").src = payUrl;
+    if (data.redirect) {
+        document.getElementById("paynowFrame").src = data.redirect;
         document.getElementById("paynowFrame").style.display = "block";
 
-    } catch (err) {
-        log("ERROR: Browser blocked API call (expected).");
-        log(err);
+        let pollUrl = data.poll;
+
+        let interval = setInterval(async () => {
+            let r = await fetch("/.netlify/functions/check-status?poll=" + pollUrl);
+            let d = await r.json();
+
+            if (d.paid === true) {
+                clearInterval(interval);
+                alert("Payment confirmed! Access unlocked.");
+                window.location.href = "success.html";
+            }
+        }, 5000);
+    } else {
+        alert("Paynow error");
     }
 }
 </script>
-
-</body>
-</html>
